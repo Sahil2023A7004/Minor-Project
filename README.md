@@ -1,2 +1,2 @@
-# Minor-Project
+# PROJECT SIEM
 SIEM Dashboard
