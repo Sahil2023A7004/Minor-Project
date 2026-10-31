@@ -1,5 +1,6 @@
 from scapy.all import sniff, IP, TCP
 from scapy.layers.tls.handshake import TLSClientHello
+import hashlib
 
 def metadata(packet):
         source_ip = packet["IP"].src
@@ -45,13 +46,39 @@ def ja4(packet):
                else:
                 continue  
          clean_extensions = []
-        extentions = hello.ext
-        for e in extentions:
+        extensions = hello.ext
+        for e in extensions:
          if e.type not in GREASE_TABLE:
           clean_extensions.append(e.type)
         c_count = f"{min(len(clean_ciphers), 99):02d}"
         e_count = f"{min(len(clean_extensions), 99):02d}"
-        
+        sni = "i"
+        sni_hostname = None
+        versions = "00"
+        alpn = "00"
+        for e in extensions:
+            if e.type == 0:
+                sni = "d"
+                if hasattr(e, "servernames") and len(e.servernames) > 0:
+                    sni_hostname = e.servernames[0].servername.decode("utf-8", errors="ignore")
+            if e.type == 16:
+                if hasattr(e, "protocols") and len(e.protocols) > 0:
+                    raw_protocol = e.protocols[0].protocol.decode("utf-8", errors="ignore")
+                    alpn = raw_protocol[0] + raw_protocol[-1]
+            if e.type == 43 and hasattr(e, "versions"):
+                if 0x0304 in e.versions:
+                 versions = "13"
+                elif 0x0303 in e.versions:
+                 versions = "12"
+        if versions == "00":
+            if hello.version == 0x0303:
+                versions = "12"
+        prefix = f"t{versions}{sni}{c_count}{e_count}{alpn}"
+
+
+
+
+
           
 
 
