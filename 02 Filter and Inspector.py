@@ -10,13 +10,19 @@ def metadata(packet):
         flags = str(packet["TCP"].flags)
         packet_size = len(packet)
         master_directory = {
+                "source_type": "network",
+                "protocol": "tcp",
                 "source_ip": source_ip,
-                "destination_ip": destination_ip,
+                "dest_ip": destination_ip,
                 "source_port": source_port,
-                "destination_port": destination_port,
-                "flags": flags,
+                "dest_port": destination_port,
+                "tcp_flags": flags,
                 "packet_size": packet_size,
-                "packet_size": packet_size,
+                "metadata":{
+                "time_to_live": time_to_live,
+                "sni": None
+                },
                 "ja4": None,
-                "event_type": TCP
+                "event_type": "TCP"
                 }
+        return master_directory
