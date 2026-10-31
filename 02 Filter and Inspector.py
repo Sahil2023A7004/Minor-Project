@@ -8,4 +8,15 @@ def metadata(packet):
         source_port = packet["TCP"].sport
         destination_port = packet["TCP"].dport
         flags = str(packet["TCP"].flags)
-        
+        packet_size = len(packet)
+        master_directory = {
+                "source_ip": source_ip,
+                "destination_ip": destination_ip,
+                "source_port": source_port,
+                "destination_port": destination_port,
+                "flags": flags,
+                "packet_size": packet_size,
+                "packet_size": packet_size,
+                "ja4": None,
+                "event_type": TCP
+                }
